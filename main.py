@@ -30,6 +30,9 @@ assert ENTRY.strip(), "entry must not be only white space"
 assert ENTRY == ENTRY.strip(), "entry must not have leading/trailing whitespace"
 assert all(c.isprintable() for c in ENTRY), "entry must be printable text"
 assert "\n" not in ENTRY and "\r" not in ENTRY, "entry must be one line"
+# Judge criterion 1: the line must name an invented city. Guard against
+# an edit that drops it.
+assert "Drizzlewick" in ENTRY, "entry must name the invented city"
 
 
 def main() -> None:
@@ -37,6 +40,8 @@ def main() -> None:
     out.parent.mkdir(parents=True, exist_ok=True)
     # No trailing newline: the gate counts every character.
     out.write_text(ENTRY, encoding="utf-8")
+    # Round-trip: what the judge reads must be exactly the line above.
+    assert out.read_text(encoding="utf-8") == ENTRY, "entry.txt must equal ENTRY"
 
 
 if __name__ == "__main__":
